@@ -1,11 +1,20 @@
 
 import './App.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 
+type ProjectImage = { src: string; caption: string }
+function adjacentImage(image: ProjectImage, direction: number): ProjectImage {
+  const images = projects.find(project => project.images.some(candidate => candidate.src === image.src))?.images
+  if (!images) return image
+  const index = images.findIndex(candidate => candidate.src === image.src)
+  return images[(index + direction + images.length) % images.length]
+}
 const projects = [ 
   {
+    id: 'early-bird',
     title: 'Project Early Bird',
+    summary: 'An ultrasonic alarm clock prototype exploring directional audio with STM32 PWM, a 40 kHz transducer array, and custom driver circuitry.',
     category: 'Ultrasonic Alarm Clock',
     
 overview:
@@ -69,7 +78,9 @@ images: [
 ],
 
   },
-  {title: 'SMARTZLE',
+  {id: 'smartzle',
+    title: 'SMARTZLE',
+    summary: 'An interactive educational puzzle combining conductive pieces, Arduino-based sensing, and LCD feedback.',
     category: 'Sustainable Interactive Electronics & Product Design',
 overview:
   'SMARTZLE is an interactive educational puzzle ' +
@@ -148,10 +159,10 @@ images: [
 function App() {
   const [expandedProject, setExpandedProject] =
     useState<string | null>(null)
-const [selectedImage, setSelectedImage] = useState<{
-  src: string;
-  caption: string;
-} | null>(null);
+const [selectedImage, setSelectedImage] = useState<ProjectImage | null>(null);
+const dialogRef = useRef<HTMLDivElement>(null);
+const pageRef = useRef<HTMLDivElement>(null);
+const isLightboxOpen = selectedImage !== null;
 
 const [showBackToTop, setShowBackToTop] = useState(false);
 
@@ -169,50 +180,49 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  if (!selectedImage) return;
-
+  if (!isLightboxOpen) return;
+  const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  const previousOverflow = document.body.style.overflow;
+  const page = pageRef.current;
+  const wasInert = page?.inert ?? false;
+  document.body.style.overflow = 'hidden';
+  if (page) page.inert = true;
+  dialogRef.current?.querySelector<HTMLButtonElement>('button')?.focus();
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
+      event.preventDefault();
       setSelectedImage(null);
-      return;
-    }
-
-    const currentProject = projects.find((project) =>
-      project.images.some((image) => image.src === selectedImage.src)
-    );
-
-    if (!currentProject) return;
-
-    const currentIndex = currentProject.images.findIndex(
-      (image) => image.src === selectedImage.src
-    );
-
-    if (event.key === 'ArrowRight') {
-      const nextIndex =
-        (currentIndex + 1) % currentProject.images.length;
-
-      setSelectedImage(currentProject.images[nextIndex]);
-    }
-
-    if (event.key === 'ArrowLeft') {
-      const previousIndex =
-        (currentIndex - 1 + currentProject.images.length) %
-        currentProject.images.length;
-
-      setSelectedImage(currentProject.images[previousIndex]);
+    } else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      event.preventDefault();
+      const direction = event.key === 'ArrowRight' ? 1 : -1;
+      setSelectedImage(image => image ? adjacentImage(image, direction) : null);
+    } else if (event.key === 'Tab') {
+      const buttons = dialogRef.current?.querySelectorAll<HTMLButtonElement>('button');
+      if (!buttons?.length) return;
+      const first = buttons[0], last = buttons[buttons.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && (active === first || !dialogRef.current?.contains(active))) {
+        event.preventDefault(); last.focus();
+      } else if (!event.shiftKey && (active === last || !dialogRef.current?.contains(active))) {
+        event.preventDefault(); first.focus();
+      }
     }
   };
-
   window.addEventListener('keydown', handleKeyDown);
-
   return () => {
     window.removeEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = previousOverflow;
+    if (page) page.inert = wasInert;
+    if (opener?.isConnected) opener.focus({ preventScroll: true });
   };
-}, [selectedImage]);
+}, [isLightboxOpen]);
+
 
   return (
     <div className="portfolio">
-      <nav className="navbar">
+      <div ref={pageRef}>
+      <a className="skip-link" href="#main-content">Skip to content</a>
+      <nav className="navbar" aria-label="Main navigation">
         <a className="logo" href="#home">YK.</a>
 
         <div className="nav-links">
@@ -269,7 +279,7 @@ useEffect(() => {
 </header>
 
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section id="about">
           <h2>About Me</h2>
           
@@ -309,32 +319,44 @@ useEffect(() => {
   <div className="project-grid">
     {projects.map((project) => {
       const isExpanded =
-        expandedProject === project.title
+        expandedProject === project.id
 
       return (
         <article
           className={`project-card ${
             isExpanded ? 'expanded' : ''
           }`}
-          key={project.title}
+          key={project.id}
         >
           <button
             type="button"
             className="project-toggle"
             aria-expanded={isExpanded}
+            aria-controls={`${project.id}-details`}
             onClick={() =>
               setExpandedProject(
-                isExpanded ? null : project.title
+                isExpanded ? null : project.id
               )
             }
           >
+            {!isExpanded && (
+              <span className="project-preview">
+                <img
+                  src={project.images[0].src}
+                  alt={project.images[0].caption}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+            )}
+
             <span className="project-category">
               {project.category}
             </span>
 
             <h3>{project.title}</h3>
 
-            <p>{project.overview}</p>
+            <p>{project.summary}</p>
 
             <span className="expand-label">
               {isExpanded
@@ -351,8 +373,7 @@ useEffect(() => {
             ))}
           </div>
 
-          {isExpanded && (
-            <div className="expanded-content">
+          <div id={`${project.id}-details`} className="expanded-content" hidden={!isExpanded}>
               <h4>Project Overview</h4>
               <p>{project.overview}</p>
 
@@ -421,7 +442,6 @@ useEffect(() => {
 </div>
 
             </div>
-          )}
         </article>
       )
     })}
@@ -477,11 +497,11 @@ useEffect(() => {
 
         
 <section id="contact">
-  <h2>Let's Connect</h2>
+  <h2>Let's Connect!</h2>
 
   <p>
     I'm interested in opportunities involving
-    electrical and computer engineering,
+    research and developement ,
     embedded systems, hardware development,
     and technical problem-solving.
   </p>
@@ -513,6 +533,7 @@ useEffect(() => {
   </div>
 </section>
       </main>
+      </div>
        {/* Project Image Lightbox */}
     {selectedImage && (
       <div
@@ -522,6 +543,7 @@ useEffect(() => {
       >
         <div
           className="lightbox-content"
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
           aria-label={selectedImage.caption}
@@ -542,26 +564,7 @@ useEffect(() => {
     type="button"
     className="lightbox-arrow lightbox-prev"
     aria-label="Previous image"
-    onClick={() => {
-      const project = projects.find((project) =>
-        project.images.some(
-          (image) => image.src === selectedImage.src
-        )
-      );
-
-      if (!project) return;
-
-      const index = project.images.findIndex(
-        (image) => image.src === selectedImage.src
-      );
-
-      setSelectedImage(
-        project.images[
-          (index - 1 + project.images.length) %
-            project.images.length
-        ]
-      );
-    }}
+    onClick={() => setSelectedImage(image => image ? adjacentImage(image, -1) : null)}
   >
     ‹
   </button>
@@ -575,40 +578,24 @@ useEffect(() => {
     type="button"
     className="lightbox-arrow lightbox-next"
     aria-label="Next image"
-    onClick={() => {
-      const project = projects.find((project) =>
-        project.images.some(
-          (image) => image.src === selectedImage.src
-        )
-      );
-
-      if (!project) return;
-
-      const index = project.images.findIndex(
-        (image) => image.src === selectedImage.src
-      );
-
-      setSelectedImage(
-        project.images[(index + 1) % project.images.length]
-      );
-    }}
+    onClick={() => setSelectedImage(image => image ? adjacentImage(image, 1) : null)}
   >
     ›
   </button>
 </div>
-          <p>{selectedImage.caption}</p>
+          <p aria-live="polite" aria-atomic="true">{selectedImage.caption}</p>
         </div>
       </div>
     )}
     
-{showBackToTop && (
+{showBackToTop && !isLightboxOpen && (
   <button
     type="button"
     className="back-to-top"
     onClick={() =>
       window.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
       })
     }
     aria-label="Back to top"

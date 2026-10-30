@@ -29,11 +29,7 @@
   color: #ffffff;
 }
 
-.portfolio header p {
-  margin-top: 18px;
-  font-size: 1.3rem;
-  color: #93c5fd;
-}
+
 
 .portfolio main {
   max-width: 1050px;
@@ -56,7 +52,7 @@
   font-size: 1.7rem;
 }
 
-.portfolio section p {
+.portfolio section :where(p) {
   color: #cbd5e1;
   font-size: 1.05rem;
   line-height: 1.8;
@@ -130,9 +126,11 @@
     border-color 0.25s ease;
 }
 
-.project-card:hover {
-  transform: translateY(-5px);
-  border-color: #60a5fa;
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover {
+    transform: translateY(-5px);
+    border-color: #60a5fa;
+  }
 }
 
 .project-category {
@@ -170,51 +168,11 @@
 
 /* Responsive Project Cards */
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
   .project-grid {
     grid-template-columns: 1fr;
   }
 }
-
-/* Detailed Engineering Project */
-
-.project-detail {
-  width: 100%;
-}
-
-.project-detail-header {
-  padding-bottom: 30px;
-  border-bottom: 1px solid #334155;
-}
-
-.project-detail-header h2 {
-  margin: 16px 0;
-  color: #ffffff;
-  font-size: clamp(2rem, 4vw, 3rem);
-}
-
-.project-detail-header p {
-  max-width: 750px;
-  color: #cbd5e1;
-  line-height: 1.8;
-}
-
-.project-detail-content {
-  padding-top: 20px;
-}
-
-.project-detail-content h3 {
-  margin-top: 32px;
-  margin-bottom: 12px;
-  color: #93c5fd;
-  font-size: 1.25rem;
-}
-
-.project-detail-content p {
-  color: #cbd5e1;
-  line-height: 1.8;
-}
-
 
 /* Technical Skills */
 
@@ -255,7 +213,7 @@
   line-height: 1.8;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
   .skills-grid {
     grid-template-columns: 1fr;
   }
@@ -290,12 +248,15 @@
     transform 0.2s ease;
 }
 
-.contact-button:hover {
-  background: #2563eb;
-  transform: translateY(-3px);
+@media (hover: hover) and (pointer: fine) {
+  .contact-button:hover {
+    background: #2563eb;
+    transform: translateY(-3px);
+  }
 }
 
 .contact-email {
+  width: 100%;
   display: block;
   margin-top: 24px;
   color: #94a3b8;
@@ -349,13 +310,7 @@
   font-weight: 500;
 }
 
-.portfolio .hero .hero-description {
-  max-width: 700px;
-  margin: 24px auto;
-  color: #cbd5e1;
-  font-size: 1.1rem;
-  line-height: 1.8;
-}
+
 
 .hero-buttons {
   display: flex;
@@ -374,8 +329,10 @@
   transition: transform 0.2s ease;
 }
 
-.hero-buttons a:hover {
-  transform: translateY(-3px);
+@media (hover: hover) and (pointer: fine) {
+  .hero-buttons a:hover {
+    transform: translateY(-3px);
+  }
 }
 
 .hero-primary {
@@ -441,15 +398,7 @@
   margin: 24px 0 12px;
 }
 
-.project-image-placeholder {
-  margin-top: 24px;
-  padding: 60px 20px;
-  background: #0b1526;
-  border: 1px dashed #475569;
-  border-radius: 10px;
-  color: #94a3b8;
-  text-align: center;
-}
+
 
 /* Technical Highlights */
 
@@ -472,6 +421,10 @@
 /* Clickable Project Images */
 
 .project-image-link {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
   display: block;
   overflow: hidden;
   border-radius: 12px;
@@ -482,8 +435,10 @@
   transition: transform 0.3s ease;
 }
 
-.project-image-link:hover .project-photo {
-  transform: scale(1.03);
+@media (hover: hover) and (pointer: fine) {
+  .project-image-link:hover .project-photo {
+    transform: scale(1.03);
+  }
 }
 
 .project-image-link:focus-visible {
@@ -518,18 +473,12 @@
 
 /* Project Image Lightbox */
 
-.project-image-link {
-  width: 100%;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  display: block;
-  cursor: zoom-in;
-}
+
 
 .image-lightbox {
   position: fixed;
   inset: 0;
+  height: 100dvh;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -542,7 +491,10 @@
 .lightbox-content {
   position: relative;
   width: min(1100px, 95vw);
-  max-height: 95vh;
+  max-height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   text-align: center;
 }
 
@@ -564,10 +516,14 @@
 
 .lightbox-close {
   position: absolute;
-  top: -42px;
+  top: 0;
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
   right: 0;
   border: none;
-  background: transparent;
+  background: rgba(10, 20, 35, 0.8);
   color: white;
   font-size: 36px;
   cursor: pointer;
@@ -587,7 +543,9 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 80vh;
+  height: min(80dvh, 800px);
+  min-height: 0;
+  flex-shrink: 1;
 }
 
 
@@ -632,8 +590,8 @@
 
 @media (max-width: 700px) {
   .lightbox-arrow {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     font-size: 26px;
   }
 
@@ -666,26 +624,11 @@
 }
 
 
-.contact-email {
-  display: block;
-  margin-top: 24px;
-  color: #94a3b8;
-  font-size: 0.95rem;
-}
-
-.contact-email a {
-  color: #93c5fd;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  overflow-wrap: anywhere;
-}
-
-
 /* Back to Top Button */
 
 .back-to-top {
   position: fixed;
-  bottom: 28px;
+  bottom: calc(28px + env(safe-area-inset-bottom, 0px));
   right: 60px;
   z-index: 900;
   display: flex;
@@ -706,9 +649,11 @@
     transform 0.2s ease;
 }
 
-.back-to-top:hover {
-  background: #2563eb;
-  transform: translateY(-4px);
+@media (hover: hover) and (pointer: fine) {
+  .back-to-top:hover {
+    background: #2563eb;
+    transform: translateY(-4px);
+  }
 }
 
 .back-to-top:focus-visible {
@@ -718,22 +663,112 @@
 
 @media (max-width: 700px) {
   .back-to-top {
-    bottom: 18px;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
     right: 24px;
     width: 44px;
     height: 44px;
   }
 }
 
-#contact .contact-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+
+
+
+
+/* Keep complete prototype images visible within their cards. */
+.project-gallery-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.project-figure { min-width: 0; margin: 0; }
+.project-photo { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: contain; background: #0b1526; }
+.project-figure figcaption { margin-top: 10px; color: #94a3b8; font-size: 0.9rem; line-height: 1.5; }
+.portfolio :where(a, button):focus-visible { outline: 3px solid #93c5fd; outline-offset: 4px; }
+.skip-link { position: fixed; top: 12px; left: 12px; z-index: 1100; padding: 12px 18px; border-radius: 8px; background: #1e3a5f; color: #fff; transform: translateY(-200%); }
+.skip-link:focus { transform: translateY(0); }
+@media (max-width: 700px) {
+  .portfolio main { padding: 36px 16px; }
+  .portfolio section { padding: 24px 18px; margin-bottom: 36px; }
+  .project-card, .skill-category { padding: 20px; }
+  .portfolio .hero { padding: 76px 20px; }
+  .project-gallery-grid { grid-template-columns: 1fr; }
 }
 
-#contact .contact-email {
+/* Comfortable touch targets without changing desktop navigation. */
+@media (max-width: 800px) {
+  .nav-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-links {
+    column-gap: 12px;
+    row-gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-buttons a {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+/* Recover reading space inside nested project panels on small phones. */
+@media (max-width: 400px) {
+  .project-card {
+    padding: 16px;
+  }
+
+  .engineering-challenge {
+    padding: 12px;
+  }
+}
+
+/* Lead with the engineering work before opening project details. */
+.project-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  max-height: 320px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  border: 1px solid #263449;
+  border-radius: 8px;
+  background: #111c30;
+}
+
+.project-preview img {
   display: block;
   width: 100%;
-  clear: both;
-  margin-top: 24px;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Open sections give the project and skill cards more visual emphasis. */
+.portfolio section:is(#about, #contact) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+#about > p {
+  max-width: 760px;
+}
+
+#contact > p {
+  max-width: 680px;
+}
+
+@media (max-width: 400px) {
+  .project-preview {
+    margin-bottom: 18px;
+  }
 }
