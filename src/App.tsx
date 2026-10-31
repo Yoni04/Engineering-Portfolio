@@ -4,6 +4,29 @@ import { useEffect, useRef, useState } from 'react'
 
 
 type ProjectImage = { src: string; caption: string }
+type IconName = 'external' | 'mail' | 'plus' | 'minus' | 'close' | 'left' | 'right' | 'up'
+
+function Icon({ name }: { name: IconName }) {
+  const paths: Record<IconName, string> = {
+    external: 'M7 17 17 7M7 7h10v10',
+    mail: 'M4 5h16v14H4zM4 6l8 7 8-7',
+    plus: 'M5 12h14M12 5v14',
+    minus: 'M5 12h14',
+    close: 'm6 6 12 12M6 18 18 6',
+    left: 'm15 6-6 6 6 6',
+    right: 'm9 6 6 6-6 6',
+    up: 'M12 19V5m-7 7 7-7 7 7',
+  }
+
+  return (
+    <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+      aria-hidden="true" focusable="false">
+      <path d={paths[name]} />
+    </svg>
+  )
+}
+
 function adjacentImage(image: ProjectImage, direction: number): ProjectImage {
   const images = projects.find(project => project.images.some(candidate => candidate.src === image.src))?.images
   if (!images) return image
@@ -18,16 +41,14 @@ const projects = [
     category: 'Ultrasonic Alarm Clock',
     
 overview:
-  'Project Early Bird was developed around the idea ' +
-  'of creating a more targeted alarm experience using ' +
-  'directional sound. The engineering work focused ' +
-  'on generating ultrasonic signals, integrating ' +
-  'piezoelectric transducers, and developing the ' +
-  'electronic circuitry needed to drive them. ' +
-  'The prototype involved experimenting with ' +
-  'microcontroller PWM generation, MOSFET switching, ' +
-  'and gate-driver circuitry while troubleshooting ' +
-  'hardware integration challenges.',
+  'The goal of Project Early Bird was to build an alarm ' +
+  'clock that directs sound toward the sleeper. ' +
+  'The prototype uses an STM32 to generate ultrasonic ' +
+  'signals and custom circuitry to drive an array of ' +
+  'piezoelectric transducers. Development involved ' +
+  'testing PWM signals, experimenting with MOSFETs ' +
+  'and gate drivers, and troubleshooting the connections ' +
+  'between the microcontroller and driver circuitry.',
   
 challenges: [
   {
@@ -53,10 +74,9 @@ challenges: [
   },
 ],
 result:
-  'Successfully demonstrated directional audible ' +
-  'sound generation using an ultrasonic transducer ' +
-  'array, validating the core audio concept behind ' +
-  'Project Early Bird.',
+  'The ultrasonic transducer array produced directional ' +
+  'audible sound, demonstrating the core audio concept ' +
+  'behind Project Early Bird.',
 
 
     technologies: ['STM32', 'PWM', 'Circuit Design'],    
@@ -83,13 +103,13 @@ images: [
     summary: 'An interactive educational puzzle combining conductive pieces, Arduino-based sensing, and LCD feedback.',
     category: 'Sustainable Interactive Electronics & Product Design',
 overview:
-  'SMARTZLE is an interactive educational puzzle ' +
-  'designed to combine physical gameplay with ' +
-  'electronic feedback. The project integrates ' +
-  'an Arduino Nano, conductive puzzle pieces, ' +
-  'GPIO expansion, and an LCD display to explore ' +
-  'how embedded electronics can support an ' +
-  'engaging, reusable learning experience.',
+  'SMARTZLE explores how electronics can make a physical ' +
+  'puzzle interactive. Conductive pieces provide inputs ' +
+  'to an Arduino Nano, while an LCD shows game information ' +
+  'and feedback. GPIO expansion provides connections for ' +
+  'multiple puzzle inputs. The work brought together ' +
+  'circuit prototyping, embedded programming, and ' +
+  'physical product design.',
   
 challenges: [
   {
@@ -122,10 +142,10 @@ challenges: [
   },
 ],
 result:
-  'Developed an interactive educational puzzle ' +
-  'prototype combining physical gameplay, ' +
-  'electronic sensing, and microcontroller-based ' +
-  'feedback.',
+  'The resulting prototype brought the sensing circuitry, ' +
+  'Arduino Nano, and LCD together in a physical puzzle. ' +
+  'The prototype let me explore how piece detection ' +
+  'and on-screen feedback could work together during play.',
 
     technologies: [
       'Arduino Nano',
@@ -247,12 +267,11 @@ useEffect(() => {
     </h2>
 
 <p className="hero-introduction">
-  Electrical and Computer Engineering graduate student
+  I'm an Electrical and Computer Engineering graduate student
   with hands-on experience in embedded systems,
   electronics prototyping, and hardware debugging.
-  Passionate about turning engineering concepts into
-  functional solutions through thoughtful design,
-  experimentation, and problem-solving.
+  I enjoy turning ideas into working prototypes and
+  figuring out what to change when they don't work as expected.
 </p>
 
 
@@ -271,7 +290,7 @@ useEffect(() => {
   rel="noopener noreferrer"
   className="hero-resume"
 >
-  View Resume ↗
+  View Resume <Icon name="external" />
 </a>
 
     </div>
@@ -284,22 +303,19 @@ useEffect(() => {
           <h2>About Me</h2>
           
 <p>
-  My engineering journey has been shaped by a curiosity
-  for how technology works and a desire to turn ideas
-  into practical solutions. As an Electrical and Computer
-  Engineering graduate student at Worcester Polytechnic
-  Institute, I've developed experience across embedded
-  systems, electronics, programming, and hands-on
-  prototyping.
+  I'm studying Electrical and Computer Engineering at
+  Worcester Polytechnic Institute. I'm curious about how
+  technology works, and I learn best by building and testing
+  things. My projects have given me experience with embedded
+  systems, electronics, programming, and hands-on prototyping.
 </p>
 
 <p>
-  Outside the classroom, my experience working in IT
-  support has strengthened my ability to troubleshoot
-  complex problems, communicate technical concepts,
-  and collaborate with people from different
-  backgrounds. I bring that same analytical and
-  people-focused approach to engineering challenges.
+  Working in IT support has taught me to troubleshoot
+  problems, explain technical concepts clearly, and work
+  with people from different backgrounds. In my engineering
+  projects, I use those same skills to work through problems
+  and explain what I find.
 </p>
 
 <p>
@@ -339,7 +355,6 @@ useEffect(() => {
               )
             }
           >
-            {!isExpanded && (
               <span className="project-preview">
                 <img
                   src={project.images[0].src}
@@ -348,7 +363,6 @@ useEffect(() => {
                   decoding="async"
                 />
               </span>
-            )}
 
             <span className="project-category">
               {project.category}
@@ -359,9 +373,8 @@ useEffect(() => {
             <p>{project.summary}</p>
 
             <span className="expand-label">
-              {isExpanded
-                ? 'Hide Details −'
-                : 'Explore Project +'}
+              {isExpanded ? 'Hide Details' : 'Explore Project'}
+              <Icon name={isExpanded ? 'minus' : 'plus'} />
             </span>
           </button>
 
@@ -373,7 +386,9 @@ useEffect(() => {
             ))}
           </div>
 
-          <div id={`${project.id}-details`} className="expanded-content" hidden={!isExpanded}>
+          <div id={`${project.id}-details`} className="expanded-content" aria-hidden={!isExpanded} inert={!isExpanded}>
+            <div className="expanded-content-inner">
+              <div className="expanded-content-body">
               <h4>Project Overview</h4>
               <p>{project.overview}</p>
 
@@ -389,7 +404,7 @@ useEffect(() => {
 </ul>
 {project.challenges && 
 (  <div className="project-engineering">
-    <h4>Engineering Challenges & Solutions</h4>
+    <h4>Engineering Work</h4>
 
     {project.challenges?.map((challenge) => (
       <div
@@ -441,7 +456,9 @@ useEffect(() => {
   </div>
 </div>
 
+              </div>
             </div>
+          </div>
         </article>
       )
     })}
@@ -476,7 +493,7 @@ useEffect(() => {
     <div className="skill-category">
       <h3>Electronics & Engineering Tools</h3>
       <p>
-        Oscilloscopes, Multimeters,
+        Signal Analysis, Oscilloscopes, Multimeters,
         Circuit Prototyping, MOSFETs,
         Gate Drivers, Hardware Debugging
       </p>
@@ -501,9 +518,8 @@ useEffect(() => {
 
   <p>
     I'm interested in opportunities involving
-    research and developement ,
-    embedded systems, hardware development,
-    and technical problem-solving.
+    research and development, embedded systems,
+    and hardware manufacturing.
   </p>
 
   <div className="contact-links">
@@ -513,14 +529,14 @@ useEffect(() => {
       rel="noopener noreferrer"
       className="contact-button"
     >
-      LinkedIn ↗
+      LinkedIn <Icon name="external" />
     </a>
 
     <a
       href="mailto:yk204.konstantine@gmail.com"
       className="contact-button"
     >
-      Email Me ✉
+      Email Me <Icon name="mail" />
     </a>
     
 <p className="contact-email">
@@ -555,7 +571,7 @@ useEffect(() => {
             onClick={() => setSelectedImage(null)}
             aria-label="Close image preview"
           >
-            ×
+            <Icon name="close" />
           </button>
 
           
@@ -566,7 +582,7 @@ useEffect(() => {
     aria-label="Previous image"
     onClick={() => setSelectedImage(image => image ? adjacentImage(image, -1) : null)}
   >
-    ‹
+    <Icon name="left" />
   </button>
 
   <img
@@ -580,7 +596,7 @@ useEffect(() => {
     aria-label="Next image"
     onClick={() => setSelectedImage(image => image ? adjacentImage(image, 1) : null)}
   >
-    ›
+    <Icon name="right" />
   </button>
 </div>
           <p aria-live="polite" aria-atomic="true">{selectedImage.caption}</p>
@@ -601,7 +617,7 @@ useEffect(() => {
     aria-label="Back to top"
     title="Back to top"
   >
-    ↑
+    <Icon name="up" />
   </button>
 )}
     </div>
