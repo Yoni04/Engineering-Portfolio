@@ -21,7 +21,7 @@ One-time setup: in the GitHub repository, open **Settings > Pages** and set
 **Source** to **GitHub Actions**. Commit and push the local changes to trigger
  deployment.
 
-Site URL after deployment: https://Yoni04.github.io/Engineering-Portfolio/
+Site URL after deployment: https://ykonstantine.github.io/Engineering-Portfolio/
 
 Vite's base path is `/Engineering-Portfolio/`. Public images and the résumé use
 that base path so their links work on GitHub Pages.
