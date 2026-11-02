@@ -79,7 +79,7 @@ result:
   'behind Project Early Bird.',
 
 
-    technologies: ['STM32', 'PWM', 'Circuit Design'],    
+    technologies: ['STM32', 'PWM', 'Circuit Design', 'Ultrasonic Audio', 'Arduino Mega', 'C'],
     highlights: [
   '40 kHz ultrasonic transducer integration',
   'STM32-based PWM signal generation',
@@ -300,11 +300,23 @@ useEffect(() => {
 
       <main id="main-content" tabIndex={-1}>
         <section id="about">
+          <div className="about-profile">
           <h2>About Me</h2>
+          <div className="profile-photo">
+          <img
+            src="/profile.png"
+            alt="Yonatan Konstantine"
+            width={330}
+            height={327}
+            loading="lazy"
+            decoding="async"
+          />
+          </div>
+          </div>
           
 <p>
   I'm studying Electrical and Computer Engineering at
-  Worcester Polytechnic Institute. I'm curious about how
+  Worcester Polytechnic Institute. I'm always curious about how
   technology works, and I learn best by building and testing
   things. My projects have given me experience with embedded
   systems, electronics, programming, and hands-on prototyping.
@@ -320,7 +332,7 @@ useEffect(() => {
 
 <p>
   Whether I'm developing an ultrasonic alarm clock,
-  integrating electronics into an interactive product,
+  integrating electronics into a sustainable interactive product,
   or learning a new technology, I enjoy the process
   of experimenting, refining designs, and building
   something that works.
