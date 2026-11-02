@@ -1,0 +1,4 @@
+Microsoft/
+node_modules/
+dist/
+.git/
