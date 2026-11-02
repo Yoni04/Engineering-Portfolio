@@ -88,11 +88,11 @@ result:
 ],
 images: [
   {
-    src: '/projects/earlybird/EarlyBird1.png',
+    src: `${import.meta.env.BASE_URL}projects/earlybird/EarlyBird1.png`,
     caption: 'Project Early Bird — Design visualization',
   },
   {
-    src: '/projects/earlybird/EarlyBird2.png',
+    src: `${import.meta.env.BASE_URL}projects/earlybird/EarlyBird2.png`,
     caption: 'Project Early Bird — Prototype',
   },
 ],
@@ -162,11 +162,11 @@ result:
 ],
 images: [
   {
-    src: '/projects/smartzle/Smartzle1.png',
+    src: `${import.meta.env.BASE_URL}projects/smartzle/Smartzle1.png`,
     caption: 'SMARTZLE — 3D design rendering',
   },
   {
-    src: '/projects/smartzle/Screenshot Smartzle Real.png',
+    src: `${import.meta.env.BASE_URL}projects/smartzle/Screenshot Smartzle Real.png`,
     caption: 'SMARTZLE — Physical prototype',
   },
 ],
@@ -285,7 +285,7 @@ useEffect(() => {
       </a>
       
 <a
-  href="/Yonatan Konstantine Resume.pdf"
+  href={`${import.meta.env.BASE_URL}Yonatan Konstantine Resume.pdf`}
   target="_blank"
   rel="noopener noreferrer"
   className="hero-resume"
@@ -304,7 +304,7 @@ useEffect(() => {
           <h2>About Me</h2>
           <div className="profile-photo">
           <img
-            src="/profile.png"
+            src={`${import.meta.env.BASE_URL}profile.png`}
             alt="Yonatan Konstantine"
             width={330}
             height={327}
@@ -549,6 +549,10 @@ useEffect(() => {
       className="contact-button"
     >
       Email Me <Icon name="mail" />
+    </a>
+
+    <a href="tel:+16175865460" className="contact-button">
+      Call Me: 617-586-5460
     </a>
     
 <p className="contact-email">

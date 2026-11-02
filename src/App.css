@@ -244,7 +244,7 @@
   background: #e9edef;
 }
 .project-preview img { display: block; width: 100%; height: 100%; object-fit: contain; transition: transform 350ms ease; }
-.portfolio img[src="/projects/earlybird/EarlyBird1.png"] {
+.portfolio img[src$="/projects/earlybird/EarlyBird1.png"] {
   clip-path: inset(0 0 0 4%);
 }
 .project-category {
