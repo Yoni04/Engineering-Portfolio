@@ -1,642 +1,110 @@
-
-import './App.css'
+﻿import './App.css'
 import { useEffect, useRef, useState } from 'react'
+import { base, githubUrl, linkedinUrl, projects, projectUrl, resumeUrl, type ProjectImage } from './data/projects'
+import { CaseStudy } from './components/CaseStudy'
+import { Icon } from './components/Icon'
+import { Lightbox } from './components/Lightbox'
+import { ProjectGallery } from './components/ProjectGallery'
 
-
-type ProjectImage = { src: string; caption: string }
-type IconName = 'external' | 'mail' | 'plus' | 'minus' | 'close' | 'left' | 'right' | 'up'
-
-function Icon({ name }: { name: IconName }) {
-  const paths: Record<IconName, string> = {
-    external: 'M7 17 17 7M7 7h10v10',
-    mail: 'M4 5h16v14H4zM4 6l8 7 8-7',
-    plus: 'M5 12h14M12 5v14',
-    minus: 'M5 12h14',
-    close: 'm6 6 12 12M6 18 18 6',
-    left: 'm15 6-6 6 6 6',
-    right: 'm9 6 6 6-6 6',
-    up: 'M12 19V5m-7 7 7-7 7 7',
-  }
-
-  return (
-    <svg className="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
-      aria-hidden="true" focusable="false">
-      <path d={paths[name]} />
-    </svg>
-  )
-}
-
-function adjacentImage(image: ProjectImage, direction: number): ProjectImage {
-  const images = projects.find(project => project.images.some(candidate => candidate.src === image.src))?.images
-  if (!images) return image
-  const index = images.findIndex(candidate => candidate.src === image.src)
-  return images[(index + direction + images.length) % images.length]
-}
-const projects = [ 
-  {
-    id: 'early-bird',
-    title: 'Project Early Bird',
-    summary: 'An ultrasonic alarm clock prototype exploring directional audio with STM32 PWM, a 40 kHz transducer array, and custom driver circuitry.',
-    category: 'Ultrasonic Alarm Clock',
-    
-overview:
-  'The goal of Project Early Bird was to build an alarm ' +
-  'clock that directs sound toward the sleeper. ' +
-  'The prototype uses an STM32 to generate ultrasonic ' +
-  'signals and custom circuitry to drive an array of ' +
-  'piezoelectric transducers. Development involved ' +
-  'testing PWM signals, experimenting with MOSFETs ' +
-  'and gate drivers, and troubleshooting the connections ' +
-  'between the microcontroller and driver circuitry.',
-  
-challenges: [
-  {
-    title: 'Signal Generation',
-    solution:
-      'Developed microcontroller-based PWM generation ' +
-      'to drive a 40 kHz ultrasonic carrier for ' +
-      'audio modulation.',
-  },
-  {
-    title: 'Driver Circuit Development',
-    solution:
-      'Experimented with MOSFET switching and ' +
-      'gate-driver circuitry to achieve reliable ' +
-      'operation of the ultrasonic transducer array.',
-  },
-  {
-    title: 'Hardware Troubleshooting',
-    solution:
-      'Investigated signal-generation, wiring, ' +
-      'and power-delivery issues through iterative ' +
-      'circuit testing and debugging.',
-  },
-],
-result:
-  'The ultrasonic transducer array produced directional ' +
-  'audible sound, demonstrating the core audio concept ' +
-  'behind Project Early Bird.',
-
-
-    technologies: ['STM32', 'PWM', 'Circuit Design', 'Ultrasonic Audio', 'Arduino Mega', 'C'],
-    highlights: [
-  '40 kHz ultrasonic transducer integration',
-  'STM32-based PWM signal generation',
-  'Gate driver and MOSFET switching circuitry',
-  'Circuit prototyping and hardware debugging',
-],
-images: [
-  {
-    src: `${import.meta.env.BASE_URL}projects/earlybird/EarlyBird1.png`,
-    caption: 'Project Early Bird — Design visualization',
-  },
-  {
-    src: `${import.meta.env.BASE_URL}projects/earlybird/EarlyBird2.png`,
-    caption: 'Project Early Bird — Prototype',
-  },
-],
-
-  },
-  {id: 'smartzle',
-    title: 'SMARTZLE',
-    summary: 'An interactive educational puzzle combining conductive pieces, Arduino-based sensing, and LCD feedback.',
-    category: 'Sustainable Interactive Electronics & Product Design',
-overview:
-  'SMARTZLE explores how electronics can make a physical ' +
-  'puzzle interactive. Conductive pieces provide inputs ' +
-  'to an Arduino Nano, while an LCD shows game information ' +
-  'and feedback. GPIO expansion provides connections for ' +
-  'multiple puzzle inputs. The work brought together ' +
-  'circuit prototyping, embedded programming, and ' +
-  'physical product design.',
-  
-challenges: [
-  {
-    title: 'Electronic Puzzle Detection',
-    solution:
-      'Designed an electronic sensing approach ' +
-      'using conductive puzzle pieces to detect ' +
-      'physical interactions with the game board.',
-  },
-  {
-    title: 'Microcontroller Integration',
-    solution:
-      'Integrated an Arduino Nano with GPIO ' +
-      'expansion to accommodate multiple puzzle ' +
-      'inputs and support the interactive system.',
-  },
-  {
-    title: 'User Feedback',
-    solution:
-      'Incorporated an LCD display to communicate ' +
-      'game information and provide feedback ' +
-      'during user interaction.',
-  },
-  {
-    title: 'Physical Prototype Development',
-    solution:
-      'Combined electronic components with ' +
-      'the physical puzzle design while addressing ' +
-      'mechanical and electrical integration.',
-  },
-],
-result:
-  'The resulting prototype brought the sensing circuitry, ' +
-  'Arduino Nano, and LCD together in a physical puzzle. ' +
-  'The prototype let me explore how piece detection ' +
-  'and on-screen feedback could work together during play.',
-
-    technologies: [
-      'Arduino Nano',
-      'C/C++',
-      'GPIO Expander',
-      'LCD Display',
-      'Circuit Prototyping',
-    ],    
-  highlights: [
-  'Arduino Nano microcontroller integration',
-  'Conductive puzzle-piece detection',
-  'GPIO expansion for multiple inputs',
-  'LCD-based interactive feedback',
-],
-images: [
-  {
-    src: `${import.meta.env.BASE_URL}projects/smartzle/Smartzle1.png`,
-    caption: 'SMARTZLE — 3D design rendering',
-  },
-  {
-    src: `${import.meta.env.BASE_URL}projects/smartzle/Screenshot Smartzle Real.png`,
-    caption: 'SMARTZLE — Physical prototype',
-  },
-],
-  },
-    
+const categories = ['All projects', 'Hardware & Electronics', 'Embedded Systems', 'Research & Development', 'Product Design']
+const skills = [
+  { title: 'Electronics & Circuit Design', items: ['Analog & digital circuits', 'MOSFETs & gate drivers', 'GPIO & PWM', 'LTspice', 'NI Multisim'] },
+  { title: 'Embedded Systems', items: ['STM32', 'Arduino', 'MSP430', 'FPGA', 'RTOS', 'Hardware/software integration'] },
+  { title: 'Programming & Development', items: ['C', 'C++', 'Python', 'Verilog', 'MATLAB', 'Java', 'Git & GitHub'] },
+  { title: 'Prototyping & Testing', items: ['Oscilloscopes', 'Digital multimeters', 'Breadboard prototyping', 'Soldering', 'Signal analysis', 'Circuit debugging'] },
+  { title: 'Engineering Software & Tools', items: ['Vivado', 'VS Code', 'Technical documentation'] },
+  { title: 'Systems & Technical Support', items: ['Hardware & software troubleshooting', 'Network & system incident triage', 'HaloITSM', 'Knowledge base management'] },
 ]
 
-
+const relativePath = window.location.pathname.slice(base.length).replace(/^\/+|\/+$/g, '').replace(/\/index\.html$/, '')
+const currentProject = projects.find(project => relativePath === `projects/${project.id}`)
 
 function App() {
-  const [expandedProject, setExpandedProject] =
-    useState<string | null>(null)
-const [selectedImage, setSelectedImage] = useState<ProjectImage | null>(null);
-const dialogRef = useRef<HTMLDivElement>(null);
-const pageRef = useRef<HTMLDivElement>(null);
-const isLightboxOpen = selectedImage !== null;
+  const [selectedImage, setSelectedImage] = useState<ProjectImage | null>(null)
+  const [filter, setFilter] = useState('All projects')
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [showBackToTop, setShowBackToTop] = useState(false)
+  const pageRef = useRef<HTMLDivElement>(null)
+  const shownProjects = projects.filter(project => filter === 'All projects' || project.categories.includes(filter))
 
-const [showBackToTop, setShowBackToTop] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShowBackToTop(window.scrollY > 700)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
-useEffect(() => {
-  const handleScroll = () => {
-    setShowBackToTop(window.scrollY > 400);
-  };
+  useEffect(() => {
+    if (currentProject || !('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const page = pageRef.current
+    const targets = page?.querySelectorAll('.reveal')
+    if (!page || !targets) return
+    page.classList.add('motion-ready')
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target) }
+    }), { threshold: 0.08 })
+    targets.forEach(target => observer.observe(target))
+    return () => { observer.disconnect(); page.classList.remove('motion-ready') }
+  }, [filter])
 
-  handleScroll();
-  window.addEventListener('scroll', handleScroll);
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') { setMenuOpen(false); document.getElementById('menu-toggle')?.focus() } }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [menuOpen])
 
-  return () => {
-    window.removeEventListener('scroll', handleScroll);
-  };
-}, []);
-
-useEffect(() => {
-  if (!isLightboxOpen) return;
-  const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-  const previousOverflow = document.body.style.overflow;
-  const page = pageRef.current;
-  const wasInert = page?.inert ?? false;
-  document.body.style.overflow = 'hidden';
-  if (page) page.inert = true;
-  dialogRef.current?.querySelector<HTMLButtonElement>('button')?.focus();
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      setSelectedImage(null);
-    } else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-      event.preventDefault();
-      const direction = event.key === 'ArrowRight' ? 1 : -1;
-      setSelectedImage(image => image ? adjacentImage(image, direction) : null);
-    } else if (event.key === 'Tab') {
-      const buttons = dialogRef.current?.querySelectorAll<HTMLButtonElement>('button');
-      if (!buttons?.length) return;
-      const first = buttons[0], last = buttons[buttons.length - 1];
-      const active = document.activeElement;
-      if (event.shiftKey && (active === first || !dialogRef.current?.contains(active))) {
-        event.preventDefault(); last.focus();
-      } else if (!event.shiftKey && (active === last || !dialogRef.current?.contains(active))) {
-        event.preventDefault(); first.focus();
-      }
-    }
-  };
-  window.addEventListener('keydown', handleKeyDown);
-  return () => {
-    window.removeEventListener('keydown', handleKeyDown);
-    document.body.style.overflow = previousOverflow;
-    if (page) page.inert = wasInert;
-    if (opener?.isConnected) opener.focus({ preventScroll: true });
-  };
-}, [isLightboxOpen]);
-
-
-  return (
-    <div className="portfolio">
-      <div ref={pageRef}>
+  return <div className="portfolio">
+    <div ref={pageRef}>
       <a className="skip-link" href="#main-content">Skip to content</a>
-      <nav className="navbar" aria-label="Main navigation">
-        <a className="logo" href="#home">YK.</a>
-
-        <div className="nav-links">
-          <a href="#about">About</a>
-          <a href="#projects">Projects</a>
-          <a href="#skills">Skills</a>
-          <a href="#contact">Contact</a>
+      <header className="site-header"><nav className="navbar" aria-label="Main navigation">
+        <a className="logo" href={base} aria-label="Yonatan Konstantine, home">YK<span>/</span></a>
+        <span className="nav-caption">Engineering portfolio</span>
+        <button id="menu-toggle" className="menu-toggle" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} aria-controls="main-navigation" onClick={() => setMenuOpen(!menuOpen)}><Icon name={menuOpen ? 'close' : 'menu'} /></button>
+        <div id="main-navigation" className={`nav-links ${menuOpen ? 'is-open' : ''}`} onClick={() => setMenuOpen(false)}>
+          <a href={`${base}#projects`}>Projects</a><a href={`${base}#about`}>About</a><a href={`${base}#experience`}>Experience</a><a href={`${base}#skills`}>Skills</a><a href={`${base}#contact`}>Contact</a>
         </div>
-      </nav>
+        {!currentProject && <a className="nav-resume" href={resumeUrl} download>Resume <Icon name="download" /></a>}
+      </nav></header>
 
-      
-<header id="home" className="hero">
-  <div className="hero-content">
-    <span className="hero-intro">
-      Welcome to my engineering portfolio
-    </span>
-
-    <h1>Yonatan Konstantine</h1>
-
-    <h2>
-      Electrical & Computer Engineer
-    </h2>
-
-<p className="hero-introduction">
-  I'm an Electrical and Computer Engineering graduate student
-  with hands-on experience in embedded systems,
-  electronics prototyping, and hardware debugging.
-  I enjoy turning ideas into working prototypes and
-  figuring out what to change when they don't work as expected.
-</p>
-
-
-    <div className="hero-buttons">
-      <a href="#projects" className="hero-primary">
-        Explore My Projects
-      </a>
-
-      <a href="#contact" className="hero-secondary">
-        Get in Touch
-      </a>
-      
-<a
-  href={`${import.meta.env.BASE_URL}Yonatan Konstantine Resume.pdf`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="hero-resume"
->
-  View Resume <Icon name="external" />
-</a>
-
-    </div>
-  </div>
-</header>
-
-
-      <main id="main-content" tabIndex={-1}>
-        <section id="about">
-          <div className="about-profile">
-          <h2>About Me</h2>
-          <div className="profile-photo">
-          <img
-            src={`${import.meta.env.BASE_URL}profile.png`}
-            alt="Yonatan Konstantine"
-            width={330}
-            height={327}
-            loading="lazy"
-            decoding="async"
-          />
+      {currentProject ? <CaseStudy project={currentProject} onImage={setSelectedImage} /> : <>
+        <header id="home" className="hero">
+          <div className="hero-content"><p className="eyebrow">Electrical & Computer Engineering · WPI</p><h1>Yonatan<br /><span>Konstantine</span></h1><h2>Designing, prototyping, and testing hardware & embedded systems.</h2><p className="hero-intro">I'm an Electrical and Computer Engineering graduate student at Worcester Polytechnic Institute. My interests span research and development, experimental engineering, and hardware/software integration.</p>
+            <div className="hero-actions"><a className="primary-link" href="#projects">View Projects <Icon name="right" /></a><a className="secondary-link" href={resumeUrl} download>Download Resume <Icon name="download" /></a></div>
+            <div className="hero-socials"><a href={githubUrl} target="_blank" rel="noopener noreferrer">GitHub <Icon name="external" /></a><a href={linkedinUrl} target="_blank" rel="noopener noreferrer">LinkedIn <Icon name="external" /></a><a href="#contact">Contact <Icon name="mail" /></a></div>
           </div>
-          </div>
-          
-<p>
-  I'm studying Electrical and Computer Engineering at
-  Worcester Polytechnic Institute. I'm always curious about how
-  technology works, and I learn best by building and testing
-  things. My projects have given me experience with embedded
-  systems, electronics, programming, and hands-on prototyping.
-</p>
+          <figure className="hero-build"><a href={projectUrl('early-bird')} aria-label="Read the Project Early Bird case study"><img src={`${base}projects/earlybird/EarlyBird1.webp`} alt="Early Bird physical prototype with an ultrasonic transducer array and alarm clock enclosure" width={493} height={500} fetchPriority="high" decoding="async" /><span className="build-link"><Icon name="external" /></span></a><figcaption><span><span className="eyebrow">Project Early Bird</span><strong>Ultrasonic parametric speaker</strong></span><span className="build-note">Physical prototype</span></figcaption></figure>
+        </header>
+        <div className="focus-strip"><span>Embedded systems</span><span>Electronics & circuit design</span><span>Prototyping & experimental testing</span><a href="#projects">Explore the projects ↓</a></div>
 
-<p>
-  Working in IT support has taught me to troubleshoot
-  problems, explain technical concepts clearly, and work
-  with people from different backgrounds. In my engineering
-  projects, I use those same skills to work through problems
-  and explain what I find.
-</p>
+        <main id="main-content" tabIndex={-1}>
+          <section id="projects" className="projects-section" aria-labelledby="projects-heading">
+            <div className="section-heading"><span className="eyebrow">01 / Engineering projects</span><div><h2 id="projects-heading">Engineering Projects</h2><p>Two engineering projects, from the system concept to the physical build.</p></div></div>
+            <div className="project-toolbar"><div className="project-filters" role="group" aria-label="Filter engineering projects">{categories.map(category => <button key={category} aria-pressed={filter === category} onClick={() => setFilter(category)}>{category}</button>)}</div><span className="project-count" aria-live="polite" role="status">{shownProjects.length} {shownProjects.length === 1 ? 'project' : 'projects'}</span></div>
+            <div className="project-grid">{shownProjects.map(project => <article className={`project-card reveal ${project.id}`} key={project.id} aria-labelledby={`${project.id}-title`}>
+              <div className="card-topline"><span className="eyebrow">Project {project.number}</span><span>{project.period}</span></div>
+              <ProjectGallery project={project} onImage={setSelectedImage} />
+              <div className="card-copy"><p className="eyebrow">{project.category}</p><h3 id={`${project.id}-title`}><a href={projectUrl(project.id)}>{project.title}</a></h3><p className="card-subtitle">{project.subtitle}</p><p>{project.summary}</p><ul className="technology-list" aria-label="Technologies">{project.technologies.map(technology => <li key={technology}>{technology}</li>)}</ul><div className="card-result"><span>Outcome</span><p>{project.result}</p></div><a className="case-link" href={projectUrl(project.id)}>Read case study <Icon name="right" /></a></div>
+            </article>)}</div>
+          </section>
 
-<p>
-  Whether I'm developing an ultrasonic alarm clock,
-  integrating electronics into a sustainable interactive product,
-  or learning a new technology, I enjoy the process
-  of experimenting, refining designs, and building
-  something that works.
-</p>
-        </section>
+          <section id="about" className="about-section reveal" aria-labelledby="about-heading"><div className="about-portrait"><img src={`${base}profile.webp`} alt="Yonatan Konstantine" width={330} height={327} loading="lazy" decoding="async" /><span>Yonatan Konstantine · Natick, MA</span></div><div className="about-copy"><span className="eyebrow">02 / About</span><h2 id="about-heading">About Me</h2><p>I'm studying Electrical and Computer Engineering at Worcester Polytechnic Institute. I'm always curious about how technology works, and I learn best by building and testing things. My projects have given me experience with embedded systems, electronics, programming, and hands-on prototyping.</p><p>Working in IT support has taught me to troubleshoot problems, explain technical concepts clearly, and work with people from different backgrounds. In my engineering projects, I use those same skills to work through problems and explain what I find.</p><p>I enjoy the hands-on side of engineering: trying an idea, testing it, and figuring out what needs to change. When something doesn't work, I like working through the problem and seeing the next version improve.</p><a className="text-link" href={resumeUrl} target="_blank" rel="noopener noreferrer">View full resume <Icon name="external" /></a></div></section>
 
-        
+          <section id="experience" className="experience-section reveal" aria-labelledby="experience-heading"><div className="section-heading"><span className="eyebrow">03 / Background</span><div><h2 id="experience-heading">Education & Experience</h2><p>Engineering study, technical support, and collaborative work.</p></div></div><div className="timeline">
+            <article><div className="timeline-meta"><span className="eyebrow">Education</span><span>Aug 2022 – May 2027</span></div><div><h3>B.S. & M.S. in Electrical and Computer Engineering</h3><p className="organization">Worcester Polytechnic Institute · Expected May 2027</p><p>Coursework includes embedded systems, digital system design, microelectronics, signal analysis, information theory, and machine learning.</p></div></article>
+            <article><div className="timeline-meta"><span className="eyebrow">Technical experience</span><span>May 2023 – Present</span></div><div><h3>IT Service Desk Specialist</h3><p className="organization">Worcester Polytechnic Institute</p><p>Triage, troubleshoot, and resolve technical support cases involving hardware, software, networking, accounts, and systems for students, faculty, and staff.</p><ul><li>Triaged, troubleshot, and resolved 10,000+ technical support cases.</li><li>Collaborate with Network and Systems Operations teams on complex incidents.</li><li>Develop documentation that supports efficient troubleshooting and user self-service.</li></ul></div></article>
+            <article><div className="timeline-meta"><span className="eyebrow">Leadership</span><span>Feb 2024 – Feb 2026</span></div><div><h3>Music Director</h3><p className="organization">Audiophiles A Cappella · Worcester Polytechnic Institute</p><p>Led rehearsals, competed in the International Competition of Collegiate A Cappella, and mixed, mastered, and released the EP <em>BPM</em> on streaming platforms.</p></div></article>
+          </div></section>
 
-<section id="projects">
-  <h2>Featured Engineering Projects</h2>
+          <section id="skills" className="skills-section reveal" aria-labelledby="skills-heading"><div className="section-heading"><span className="eyebrow">04 / Technical expertise</span><div><h2 id="skills-heading">Skills & Tools</h2><p>Experience documented in my projects and resume.</p></div></div><div className="skills-grid">{skills.map((skill, index) => <article className="skill-group" key={skill.title}><span className="skill-number">0{index + 1}</span><h3>{skill.title}</h3><ul>{skill.items.map(item => <li key={item}>{item}</li>)}</ul></article>)}</div></section>
 
-  <div className="project-grid">
-    {projects.map((project) => {
-      const isExpanded =
-        expandedProject === project.id
-
-      return (
-        <article
-          className={`project-card ${
-            isExpanded ? 'expanded' : ''
-          }`}
-          key={project.id}
-        >
-          <button
-            type="button"
-            className="project-toggle"
-            aria-expanded={isExpanded}
-            aria-controls={`${project.id}-details`}
-            onClick={() =>
-              setExpandedProject(
-                isExpanded ? null : project.id
-              )
-            }
-          >
-              <span className="project-preview">
-                <img
-                  src={project.images[0].src}
-                  alt={project.images[0].caption}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </span>
-
-            <span className="project-category">
-              {project.category}
-            </span>
-
-            <h3>{project.title}</h3>
-
-            <p>{project.summary}</p>
-
-            <span className="expand-label">
-              {isExpanded ? 'Hide Details' : 'Explore Project'}
-              <Icon name={isExpanded ? 'minus' : 'plus'} />
-            </span>
-          </button>
-
-          <div className="project-technologies">
-            {project.technologies.map((tech) => (
-              <span className="tech-tag" key={tech}>
-                {tech}
-              </span>
-            ))}
-          </div>
-
-          <div id={`${project.id}-details`} className="expanded-content" aria-hidden={!isExpanded} inert={!isExpanded}>
-            <div className="expanded-content-inner">
-              <div className="expanded-content-body">
-              <h4>Project Overview</h4>
-              <p>{project.overview}</p>
-
-              
-<h4>Technical Highlights</h4>
-
-<ul className="project-highlights">
-  {project.highlights.map((highlight) => (
-    <li key={highlight}>
-      {highlight}
-    </li>
-  ))}
-</ul>
-{project.challenges && 
-(  <div className="project-engineering">
-    <h4>Engineering Work</h4>
-
-    {project.challenges?.map((challenge) => (
-      <div
-        className="engineering-challenge"
-        key={challenge.title}
-      >
-        <h5>{challenge.title}</h5>
-        <p>{challenge.solution}</p>
-      </div>
-    ))}
-
-    <h4>Project Results</h4>
-    <p>{project.result}</p>
-  </div>
-)}
-
-
-
-              
-<div className="project-gallery">
-  <h4>Prototype & Development</h4>
-
-  <div className="project-gallery-grid">
-    {project.images.map((image) => (
-      <figure
-        className="project-figure"
-        key={image.src}
-      >        
-
-<button
-  type="button"
-  className="project-image-link"
-  onClick={() => setSelectedImage(image)}
-  aria-label={`View full-size image: ${image.caption}`}
->
-  <img
-    src={image.src}
-    alt={image.caption}
-    className="project-photo"
-    loading="lazy"
-  />
-</button>
-
-        <figcaption>
-          {image.caption}
-        </figcaption>
-      </figure>
-    ))}
-  </div>
-</div>
-
-              </div>
-            </div>
-          </div>
-        </article>
-      )
-    })}
-  </div>
-</section>
-
-
-
-        
-
-<section id="skills">
-  <h2>Technical Skills</h2>
-
-  <div className="skills-grid">
-    <div className="skill-category">
-      <h3>Programming & Development</h3>
-      <p>
-        C, C++, Python, Verilog, Git,
-        GitHub, VS Code
-      </p>
+          <section id="contact" className="contact-section reveal" aria-labelledby="contact-heading"><span className="eyebrow">05 / Contact</span><div className="contact-layout"><div><h2 id="contact-heading">Get in touch</h2><p>Interested in hardware, embedded systems, and research & development opportunities. I'd be glad to discuss my projects and experience.</p><span className="location">Natick, Massachusetts</span></div><div className="contact-actions"><a className="contact-email" href="mailto:yk204.konstantine@gmail.com">yk204.konstantine@gmail.com <Icon name="external" /></a><a href="tel:+16175865460">617-586-5460</a><div className="contact-links"><a href={githubUrl} target="_blank" rel="noopener noreferrer">GitHub <Icon name="external" /></a><a href={linkedinUrl} target="_blank" rel="noopener noreferrer">LinkedIn <Icon name="external" /></a><a href={resumeUrl} download>Download Resume <Icon name="download" /></a></div></div></div></section>
+        </main>
+      </>}
+      <footer className="footer"><a href={base}>Yonatan Konstantine</a><span>Electrical & Computer Engineering</span><a href={currentProject ? '#main-content' : '#home'}>Back to top ↑</a></footer>
     </div>
-
-    <div className="skill-category">
-      <h3>Embedded Systems & Hardware</h3>
-      <p>
-        STM32, Arduino, MSP430, FPGA,
-        PWM, Microcontroller Programming,
-        Circuit Design
-      </p>
-    </div>
-
-    <div className="skill-category">
-      <h3>Electronics & Engineering Tools</h3>
-      <p>
-        Signal Analysis, Oscilloscopes, Multimeters,
-        Circuit Prototyping, MOSFETs,
-        Gate Drivers, Hardware Debugging
-      </p>
-    </div>
-
-    <div className="skill-category">
-      <h3>IT & Technical Support</h3>
-      <p>
-        Technical Troubleshooting,
-        HaloITSM, Technical Documentation,
-        Knowledge Base Management,
-        Customer Support
-      </p>
-    </div>
+    {selectedImage && <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} onChange={setSelectedImage} />}
+    {showBackToTop && !selectedImage && <button className="back-to-top" onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })} aria-label="Back to top"><Icon name="up" /></button>}
   </div>
-</section>
-
-
-        
-<section id="contact">
-  <h2>Let's Connect!</h2>
-
-  <p>
-    I'm interested in opportunities involving
-    research and development, embedded systems,
-    and hardware manufacturing.
-  </p>
-
-  <div className="contact-links">
-    <a
-      href="https://www.linkedin.com/in/yonatankonstantine"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="contact-button"
-    >
-      LinkedIn <Icon name="external" />
-    </a>
-
-    <a
-      href="mailto:yk204.konstantine@gmail.com"
-      className="contact-button"
-    >
-      Email Me <Icon name="mail" />
-    </a>
-
-    <a href="tel:+16175865460" className="contact-button">
-      Call Me: 617-586-5460
-    </a>
-    
-<p className="contact-email">
-  Or email me directly at:{' '}
-  <a href="mailto:yk204.konstantine@gmail.com">
-    yk204.konstantine@gmail.com
-  </a>
-</p>
-
-  </div>
-</section>
-      </main>
-      </div>
-       {/* Project Image Lightbox */}
-    {selectedImage && (
-      <div
-        className="image-lightbox"
-        role="presentation"
-        onClick={() => setSelectedImage(null)}
-      >
-        <div
-          className="lightbox-content"
-          ref={dialogRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label={selectedImage.caption}
-          onClick={(event) => event.stopPropagation()}
-        >
-          <button
-            type="button"
-            className="lightbox-close"
-            onClick={() => setSelectedImage(null)}
-            aria-label="Close image preview"
-          >
-            <Icon name="close" />
-          </button>
-
-          
-<div className="lightbox-image-wrapper">
-  <button
-    type="button"
-    className="lightbox-arrow lightbox-prev"
-    aria-label="Previous image"
-    onClick={() => setSelectedImage(image => image ? adjacentImage(image, -1) : null)}
-  >
-    <Icon name="left" />
-  </button>
-
-  <img
-    src={selectedImage.src}
-    alt={selectedImage.caption}
-  />
-
-  <button
-    type="button"
-    className="lightbox-arrow lightbox-next"
-    aria-label="Next image"
-    onClick={() => setSelectedImage(image => image ? adjacentImage(image, 1) : null)}
-  >
-    <Icon name="right" />
-  </button>
-</div>
-          <p aria-live="polite" aria-atomic="true">{selectedImage.caption}</p>
-        </div>
-      </div>
-    )}
-    
-{showBackToTop && !isLightboxOpen && (
-  <button
-    type="button"
-    className="back-to-top"
-    onClick={() =>
-      window.scrollTo({
-        top: 0,
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
-      })
-    }
-    aria-label="Back to top"
-    title="Back to top"
-  >
-    <Icon name="up" />
-  </button>
-)}
-    </div>
-  )
 }
 export default App

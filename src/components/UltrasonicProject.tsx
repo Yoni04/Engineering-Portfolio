@@ -61,9 +61,8 @@ function UltrasonicProject() {
           Prototype development included
           signal-generation testing and
           troubleshooting of the electronic
-          driver stages. Further characterization
-          of audio output and directional
-          performance will be documented here.
+          driver stages. The ultrasonic array
+          produced directional audible sound.
         </p>
       </div>
     </div>
